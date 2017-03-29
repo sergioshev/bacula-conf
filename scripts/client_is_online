@@ -1,0 +1,29 @@
+#!/bin/bash
+
+# $Id: client_is_online,v 1.1 2015/11/14 15:03:45 aosorio Exp $
+#
+# Script para ver si un cliente está en línea y con el servicio de Bacula
+# ejecutándose.
+#
+
+client=$1
+port=${2:-9102}
+
+if [ "x$1" == "x" ] ; then
+  cat <<FFAA
+Modo de uso:
+
+  $0 <client> [<port>]
+
+  <client> El cliente a consultar.
+  <port>   Puerto donde escucha el servicio Bacula Fd (por defecto se usa 9102).
+
+  Se retorna 0 si el cliente está online o distinto de 0 sino.
+FFAA
+
+  exit 2
+fi
+
+echo q | telnet -e q $client $port > /dev/null 2>&1
+
+exit $?

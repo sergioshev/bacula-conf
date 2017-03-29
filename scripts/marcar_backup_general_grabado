@@ -1,0 +1,83 @@
+#!/bin/bash
+
+# $Id: marcar_backup_general_grabado,v 1.2 2014-06-26 17:41:39 aosorio Exp $
+##
+# Script para registrar el grabado de un backup general.
+#
+
+BACULA_DIR=bacula-dir.terminalquequen.com.ar
+
+function check_numeric
+{
+  [ -n "$( echo "$1" | grep '[0-9]' )" ] || {
+    echo -e 1>&2 "ERROR: El valor debe ser numérico\n"
+    return 1
+  }
+  return 0
+}
+
+## Lectura de parámetros desde consola
+
+read -p "Fecha de grabado (default ahora): " fecha_de_grabado
+
+read -p "Medio (cantidad): " medio_cantidad
+
+check_numeric $medio_cantidad || exit 1
+
+read -p "Medio (1=CD, 2=DVD): " medio_tipo
+
+check_numeric $medio_tipo || exit 1
+
+case $medio_tipo in
+  1) medio_tipo='CD' ;;
+  2) medio_tipo='DVD' ;;
+  *) echo -e 1>&2 "Tipo de medio incorrecto: $medio_tipo.\n\n" ; exit 1 ;;
+esac
+
+read -p "Período contenido (inicio): " periodo_contenido_inicio
+read -p "Período contenido (fin): " periodo_contenido_fin
+
+[ -z "$periodo_contenido_inicio" ] || [ -z "$periodo_contenido_fin" ] && {
+  echo -e 1>&2 "Debe indicar periodo de inicio y fin de contenido\n\n"
+  exit 1
+}
+
+read -p "Descripción contenido (1=Backup diario, 2=NotUx,
+         3=Inutil_F, 4=Inutil_H, 5=Squid, 6=Otro): " descripcion_contenido
+
+check_numeric $descripcion_contenido || exit 1
+
+case $descripcion_contenido in
+  1) descripcion_contenido='backup_diario' ;;
+  2) descripcion_contenido='notux' ;;
+  3) descripcion_contenido='inutil_f' ;;
+  4) descripcion_contenido='inutil_h' ;;
+  5) descripcion_contenido='squid_reports' ;;
+  6) read -p 'Descripcion contenido: ' descripcion_contenido ;;
+  *) echo -e 1>&2 "Debe indicar la descripción de contenido\n\n" ; exit 1 ;;
+esac
+
+##
+[ -n "$fecha_de_grabado" ] && {
+  fecha_de_grabado="'$fecha_de_grabado'"
+} || {
+  fecha_de_grabado='CURRENT_TIMESTAMP'
+}
+
+medio="'$medio_cantidad$medio_tipo'"
+periodo_contenido_inicio="'$periodo_contenido_inicio'"
+periodo_contenido_fin="'$periodo_contenido_fin'"
+descripcion_contenido="'$descripcion_contenido'"
+
+read -p "¿Desea registrar el grabado de $medio_cantidad $medio_tipo con archivos de $descripcion_contenido desde $periodo_contenido_inicio hasta $periodo_contenido_fin? (responda s/n): " pregunta
+
+[ "$pregunta" == 's' ] || exit 0
+
+QUERY="INSERT INTO tq_backup_general(
+         fecha_de_grabado, medio, periodo_contenido_inicio,
+         periodo_contenido_fin, descripcion_contenido )
+       VALUES(
+         $fecha_de_grabado, $medio, $periodo_contenido_inicio,
+         $periodo_contenido_fin, $descripcion_contenido ) ;"
+
+ssh $BACULA_DIR "echo \"$QUERY\" | psql -U bacula"

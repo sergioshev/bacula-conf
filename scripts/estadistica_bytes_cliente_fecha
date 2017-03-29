@@ -1,0 +1,51 @@
+#!/bin/bash
+
+dias_atras=10
+
+i=$(($dias_atras-1))
+
+query="
+  SELECT starttime
+    FROM tq_bytes_por_cliente_dia
+    WHERE starttime > CURRENT_DATE-$dias_atras AND
+    bytes_por_dia > 0"
+
+dias_con_datos="$( echo $query | psql -U bacula bacula )"
+
+while [ $i -ge 0 ] ; do
+  dia=$( date +%F --date="-$i day" )
+  if [ -n "$( echo $dias_con_datos | grep $dia )" ] ; then
+    columnas_dias="$columnas_dias \"$dia\" text"
+  fi
+  i=$(($i-1))
+done
+
+columnas_dias=$( echo $columnas_dias | sed 's/text\s\+/text,/g' )
+
+{
+cat <<FFAA
+SELECT c.name as cliente,
+       mt.*
+  FROM crosstab(
+    'SELECT clientid,
+            starttime,
+            pg_size_pretty(bytes_por_dia::bigint) as bytes_por_dia
+       FROM tq_bytes_por_cliente_dia
+       WHERE starttime > CURRENT_DATE-$dias_atras AND
+             bytes_por_dia > 0
+       ORDER BY clientid,
+                starttime',
+
+    'SELECT starttime
+       FROM tq_bytes_por_cliente_dia
+       WHERE starttime > CURRENT_DATE-$dias_atras AND
+             bytes_por_dia > 0
+       GROUP BY starttime'
+    ) AS mt(clientid integer,
+            $columnas_dias
+    )
+  JOIN client c
+    ON c.clientid=mt.clientid
+  ORDER BY name;
+FFAA
+} | psql -U bacula bacula

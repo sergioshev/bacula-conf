@@ -1,0 +1,8 @@
+#!/bin/bash
+
+# Escapar barras
+BACULA_SCRIPTS='\/etc\/bacula\/scripts'
+
+cat /dev/stdin | grep -v '^\s*$' | grep -v '^\s*#' | \
+  sed -ne 's/^\s*\(^[^[:space:]]\+\)\s\([^[:space:]]\+\)\s\([^[:space:]]\+\)\s\([^[:space:]]\+\)\s\([^[:space:]]\+\)\s\([^[:space:]]\+\)\s\([^[:space:]]\+\)\s*\([^[:space:]]*\).*$/\1 \2 \3 \4 \5 root ( <bacula_scripts>\/runJobConditionally \6 \7 \8 || <bacula_scripts>\/addDeferredJob \6 \7 \8 )/p' | \
+  sed "s/<bacula_scripts>/$BACULA_SCRIPTS/g"

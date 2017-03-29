@@ -1,0 +1,37 @@
+#
+# $Id: Messages-resource.txt,v 1.10 2015/06/12 19:07:05 aosorio Exp $
+# ------------------------------------------------------------------------------
+#
+# Messages resources - Director daemon
+# ====================================
+#
+
+Messages {
+  Name = Standard
+  mailcommand = "/usr/lib/bacula/bsmtp -h localhost -f \"\(Bacula\) \<%r\>\" -s \"Bacula: %t %e \(%n\) of %c %l\" %r"
+  operatorcommand = "/usr/lib/bacula/bsmtp -h localhost -f \"\(Bacula\) \<%r\>\" -s \"Bacula: Intervention needed for %j\" %r"
+  mail = sistemas@terminalquequen.com.ar = all
+  operator = sistemas@terminalquequen.com.ar = mount
+  console = all, !skipped, !saved
+  append = "/var/log/bacula/log" = all, !skipped
+  catalog = all, !skipped, !saved
+}
+
+Messages {
+  Name = Daemon
+  mailcommand = "/usr/lib/bacula/bsmtp -h localhost -f \"\(Bacula\) \<%r\>\" -s \"Bacula daemon message\" %r"
+  mail = sistemas@terminalquequen.com.ar = all, !skipped
+  console = all, !skipped, !saved
+  append = "/var/log/bacula/log" = all, !skipped
+  catalog = all, !skipped, !saved
+}
+
+Messages {
+  Name = Quiet
+  mailcommand = "/usr/lib/bacula/bsmtp -h localhost -f \"\(Bacula\) \<%r\>\" -s \"Bacula: %t %e of %c %l\" %r"
+  operatorcommand = "/usr/lib/bacula/bsmtp -h localhost -f \"\(Bacula\) \<%r\>\" -s \"Bacula: Intervention needed for %j\" %r"
+  mail = sistemas@terminalquequen.com.ar = !INFO
+  operator = sistemas@terminalquequen.com.ar = mount
+  console = all, !skipped, !saved
+  append = "/var/log/bacula/log" = all, !skipped
+}

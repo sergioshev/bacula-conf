@@ -1,0 +1,35 @@
+#!/bin/bash
+
+BACULA_CONF=/etc/bacula
+LOCKFILE=/var/tmp/runDeferredJobs.lock
+
+deferredJobs=$BACULA_CONF/.deferredJobs.list
+executedJobs=$BACULA_CONF/.executedJobs.list
+tmpfile=$( mktemp /tmp/runDeferredJobsXXXXX.tmp )
+
+if [ -r "$LOCKFILE" ] ; then
+  echo "Se encontró otra instancia ejecutándose." 1>&2
+  exit 2
+fi
+
+[ -r $deferredJobs ] || exit 0
+
+trap "rm -f $LOCKFILE $executedJobs $tmpfile" EXIT
+touch "$LOCKFILE"
+
+IFS='
+'
+cat $deferredJobs | while read data ; do
+  job="$( echo $data | cut -d \; -f 1 )"
+  client="$( echo $data | cut -d \; -f 2 )"
+  port="$( echo $data | cut -d \; -f 3 )"
+  echo "Ejecutando trabajo diferido $job en $client:$port"
+  /etc/bacula/scripts/runJobConditionally $job $client $port && \
+    echo "$job;$client;$port" >> $executedJobs
+done
+
+cat $deferredJobs | grep -v -f $executedJobs > $tmpfile
+
+mv $tmpfile $deferredJobs
+
+rm -f "$LOCKFILE $executedJobs $tmpfile"

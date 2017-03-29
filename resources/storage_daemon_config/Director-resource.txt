@@ -1,0 +1,10 @@
+#
+# $Id: Director-resource.txt,v 1.1 2011-10-24 18:54:26 aosorio Exp $
+#
+# Director - Storage daemon config
+#
+
+Director {
+  Name = bacula-dir
+  Password = "Ic5A9QeOWxYKy0zvQ5zkT4_YjrvLKDgwH"
+}

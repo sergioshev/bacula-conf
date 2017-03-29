@@ -1,0 +1,35 @@
+#!/bin/bash
+
+# $Id: corregirBackupConError,v 1.10 2015/11/16 18:06:59 aosorio Exp $
+#
+# Script para ejecutar los backups que tienen como última terminación
+# una distinta a 'T' (correcto).
+# Sólo se ejecuta el job si el cliente de Bacula responde.
+#
+
+LOCK_FILE=/tmp/corregirBackupConError.lock
+
+[ -a $LOCK_FILE ] && exit 0
+
+touch $LOCK_FILE
+
+{
+cat <<FFAA
+SELECT name,
+       clientname
+  FROM tq_backup_con_error;
+FFAA
+} | psql -AU bacula bacula | head -n -1 | tail -n +2 | while read data ; do
+  job="$( echo $data | cut -f 1 -d \| )"
+  client="$( echo $data | cut -f 2 -d \| )"
+  address="$( echo "show client=$client" | bconsole | \
+                sed -ne 's/.*address=\(\S\+\)\+.*$/\1/p' )"
+  port="$( echo "show client=$client" | bconsole | \
+             sed -ne 's/.*FDport=\([0-9]\+\)\+.*$/\1/p' )"
+
+  [ -z "$address" ] || [ -z "$port" ] && continue
+
+  /etc/bacula/scripts/runJobConditionally $job $address $port > /dev/null
+done
+
+rm -f $LOCK_FILE

@@ -1,0 +1,101 @@
+#!/bin/bash
+
+# $Id: registrarAlmacenBackupToHTML,v 1.1 2011-11-23 20:57:02 sistemas Exp $
+#
+# Script para generar un HTML con el registro de almacén de backups.
+#
+
+set -e
+
+function sqlToHTML
+{
+  TMPFILE="$( mktemp /tmp/registrarAlmacenBackupToHTML_XXXXX )"
+
+  cat /dev/stdin | head -n -1 > "$TMPFILE"
+
+  ## Título
+  head -n 1 < "$TMPFILE" | \
+    sed 's/^/<tr><td><b>/g;s/|/<\/b><\/td><td><b>/g;s/$/<\/b><\/td><\/tr>/g'
+
+  ## Registros
+  tail -n +2 < "$TMPFILE" | \
+    sed 's/^/<tr><td>/g;s/|/<\/td><td>/g;s/$/<\/td><\/tr>/g'
+
+  rm -f "$TMPFILE"
+}
+
+BACULADIR=bacula-dir.terminalquequen.com.ar
+VERSION="1.0"
+
+## Se toma el almacén por 1er parámetro
+almacen=$1
+
+## Primera parte del HTML
+cat <<FFAA
+<html>
+  <head>
+    <title>Registro de almac&eacute;n de Backup</title>
+  </head>
+
+  <body>
+
+    <h1 align="center">
+      <p><u>Registro de almac&eacute;n de Backup</u></p>
+    </h1>
+
+    <h2 align="center">
+      <p>Fecha: $( date +%F )</p>
+      <p>Versi&oacute;n: $VERSION</p>
+    </h2>
+
+    <h3 align="center">
+      <u>Res&uacute;men del almac&eacute;n Nro. $almacen</u>
+    </h3>
+
+    <table align="center" border=1>
+FFAA
+
+## Resumen del almacén.
+QUERY="SELECT almacen,
+              fecha_de_almacen,
+              volumen_bacula,
+              backup_general
+         FROM tq_consulta_resumen_almacen
+         WHERE almacen=$almacen ;"
+
+ssh $BACULADIR "echo \"$QUERY\" | psql -AU bacula" | sqlToHTML
+
+## Detalle del almacén.
+cat <<FFAA
+    </table>
+
+    <h3 align="center">
+      <u>Detalle del almac&eacute;n Nro. $almacen</u>
+    </h3>
+
+    <table align="center" border=1>
+FFAA
+
+QUERY="SELECT volume AS volumen_bacula,
+              backup_general
+         FROM tq_consulta_detalle_almacen
+         WHERE almacen=$almacen ;"
+
+ssh $BACULADIR "echo \"$QUERY\" | psql -AU bacula" | sqlToHTML
+
+## Última parte del HTML
+cat <<FFAA
+    </table>
+
+    <h2>
+      <br><br><br><br>
+      <p>Operador de Backup: ...........................................</p>
+      <br><br><br><br>
+      <p>Jefe de Sistemas:   ...........................................</p>
+    </h2>
+    
+  </body>
+</html>
+FFAA
+
+echo 0

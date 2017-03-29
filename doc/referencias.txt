@@ -1,0 +1,16 @@
+$Id: referencias.txt,v 1.3 2011-10-26 17:32:02 sistemas Exp $
+
+- Bacula Main Reference
+  http://www.bacula.org/5.0.x-manuals/en/main/main/index.html
+
+- Bacula Console and Operators Guide
+  http://www.bacula.org/5.0.x-manuals/en/console/console/index.html
+
+- Webacula installation on Ubuntu
+  http://www.java-tutorial.ch/ubuntu/webacula-installation-on-ubuntu
+
+- Bacula Utility Programs
+  http://www.bacula.org/3.0.x-manuals/en/utility/utility/Bacula_Utility_Programs.html
+
+- Variable expansion
+  http://www.bacula.org/fr/dev-manual/Variable_Expansion.html

@@ -1,0 +1,36 @@
+# $Id: Makefile.base,v 1.3 2011-10-25 10:11:28 sistemas Exp $
+
+CLEANTARGETS=$(patsubst %, _clean_%, $(SUBDIRS))
+INSTALLTARGETS=$(patsubst %, _install_%, $(SUBDIRS))
+FULLINSTALLTARGETS=$(patsubst %, _fullinstall_%, $(SUBDIRS))
+
+.PHONY: all
+all:
+
+.PHONY: clean
+clean: $(CLEANTARGETS)
+
+.PHONY: install
+install: $(INSTALLTARGETS)
+
+.PHONY: fullinstall
+fullinstall: $(FULLINSTALLTARGETS)
+
+.PHONY: cinstall
+cinstall: install clean
+
+.PHONY: cfullinstall
+cfullinstall: fullinstall clean
+
+.PHONY: $(CLEANTARGETS)
+$(CLEANTARGETS):
+	make -C $(patsubst _clean_%, % ,$@) clean
+
+.PHONY: $(INSTALLTARGETS)
+$(INSTALLTARGETS):
+	make -C $(patsubst _install_%, % ,$@) install
+
+.PHONY: $(FULLINSTALLTARGETS)
+$(FULLINSTALLTARGETS):
+	make -C $(patsubst _fullinstall_%, % ,$@) fullinstall
+

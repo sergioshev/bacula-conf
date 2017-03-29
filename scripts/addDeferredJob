@@ -1,0 +1,25 @@
+#!/bin/bash
+
+# $Id: addDeferredJob,v 1.1 2015/11/14 15:03:45 aosorio Exp $
+#
+# Script para marcar un backup para que se ejecute apenas se "despierta"
+# el cliente.
+#
+
+file=/etc/bacula/.deferredJobs.list
+
+job=$1
+client=$2
+port=$3
+
+if [ "x$job" == "x" ] || [ "x$client" == "x" ] ; then
+  cat <<FFAA
+Modo de uso
+
+  $0 <job> <client> [<port>]
+FFAA
+
+  exit 2
+fi
+
+grep -q "$job;$client;$port" $file || echo "$job;$client;$port" >> "$file"

@@ -1,0 +1,554 @@
+#
+# $Id: FileSet-resource.txt,v 1.119 2016/05/24 00:43:26 root Exp $
+#
+# FileSet - Director config
+#
+
+# Catálogo de Bacula.
+FileSet {
+  Name = "Catalog"
+  Include {
+    Options {
+      Signature = MD5
+    }
+    File = "/var/lib/bacula/bacula.sql"
+  }
+}
+
+FileSet {
+  Name = "eloso-fs"
+  Include {
+    Options {
+      Compression = GZIP
+      Signature = MD5
+    }
+    File = "/etc"
+    File = "/root/bin"
+    File = "/usr/local/bin"
+    File = "/usr/share/laridae"
+    File = "/var/lib/samba_shares/F"
+    File = "/var/lib/cvs"
+    File = "/var/tmp/fichada.sql"
+    File = "/var/log/wslaridae"
+  }
+}
+
+FileSet {
+  Name = "discovery-fs"
+  Include {
+    Options {
+      Compression = GZIP
+      Signature = MD5
+    }
+    File = "/etc"
+    File = "/var/VPAR/VPAR_UNIFIED_5_LINUX_07-2012"
+    File = "/var/activeco/archivado"
+    File = "/root/bin"
+    Exclude Dir Containing = .excludeme
+  }
+}
+
+# pcsupmant2
+FileSet {
+  Name = "pcsupmant2-fs"
+  Enable VSS = No
+  Include {
+    Options {
+      Compression = GZIP
+      Signature = MD5
+      IgnoreCase = Yes
+    }
+    File = "D:/MAS"
+    File = "C:/Users/dibujante/Documents/Archivos de Outlook"
+    File = "C:/Users/dibujante/AppData/Local/Microsoft/Outlook"
+  }
+}
+
+# panzer
+FileSet {
+  Name = "panzer-fs"
+  Include {
+    Options {
+      Compression = GZIP
+      Signature = MD5
+      IgnoreCase = Yes
+    }
+    File = "D:/MP2"
+  }
+}
+
+# pcsistemas
+FileSet {
+  Name = "pcsistemas-fs"
+  Include {
+    Options {
+      Compression = GZIP
+      Signature = MD5
+      WildFile = "*.sqlite-journal"
+      WildFile = "*.json"
+      Exclude = Yes
+    }
+    File = "/etc"
+    File = "/var/www"
+    File = "/root/bin"
+    File = "/var/www/sistemas_html"
+  }
+}
+
+# pcsupmant
+FileSet {
+  Name = "pcsupmant-fs"
+  Include {
+    Options {
+      Compression = GZIP
+      Signature = MD5
+      IgnoreCase = Yes
+    }
+    File = "D:/mantenimiento"
+  }
+}
+
+# NotUx
+FileSet {
+  Name = "notux-fs"
+  Include {
+    Options {
+      Compression = GZIP
+      Signature = MD5
+    }
+    File = "/var/tmp/laridae.sql"
+    File = "/var/tmp/drupal6.sql"
+    File = "/var/tmp/drupal7.sql"
+  }
+}
+
+# pcdesarrollo
+FileSet {
+  Name = "pcdesarrollo-fs"
+  Enable VSS = No
+  Include {
+    Options {
+      Compression = GZIP
+      Signature = MD5
+      IgnoreCase = Yes
+    }
+    File = "C:/repositorio"
+  }
+}
+
+# plcdb
+FileSet {
+  Name = "plcdb-fs"
+  Include {
+    Options {
+      Compression = GZIP
+      Signature = MD5
+    }
+    File = "/etc"
+    File = "/root/"
+    File = "/var/www/"
+    File = "/var/backups/bacula"
+    File = "/usr/local"
+  }
+}
+
+
+
+
+# euro
+FileSet {
+  Name = "euro-fs"
+  Include {
+    Options {
+      Compression = GZIP
+      Signature = MD5
+    }
+    File = "/etc"
+    File = "/root/bin"
+    File = "/var/www/html/rcube"
+    File = "/usr/lib/nagios"
+    File = "/usr/local"
+    File = "/var/backups/sreport"
+  }
+}
+
+# ngenio
+FileSet {
+  Name = "ngenio-fs"
+  Include {
+    Options {
+      Compression = GZIP
+      Signature = MD5
+    }
+    File = "/etc"
+    File = "/root/bin"
+    File = "/root/ssl"
+    File = "/usr/lib/ocf"
+  }
+}
+
+
+# pccontab
+FileSet {
+  Name = "pccontab-fs"
+  Include {
+    Options {
+      Compression = GZIP
+      Signature = MD5
+      IgnoreCase = Yes
+    }
+    File = "C:/Program Files/S.I.Ap/AFIP"
+    File = "C:/Users/norma/Desktop/Backup"
+    File = "C:/Users/norma/Desktop/ReporteTitulares"
+    File = "C:/ProyOnca"
+    File = "C:/BuscaCartaPorte"
+  }
+}
+
+
+# pccupos
+FileSet {
+  Name = "pccupos-fs"
+  Include {
+    Options {
+      Compression = GZIP
+      Signature = MD5
+      IgnoreCase = Yes
+      WildFile = "*.xls"
+    }
+    File = "C:/Documents and Settings/cuposa/Mis documentos"
+  }
+}
+
+# phantom
+FileSet {
+  Name = "phantom-fs"
+  Include {
+    Options {
+      Compression = GZIP
+      Signature = MD5
+    }
+
+    File = "/etc"
+    File = "/root/bin"
+    File = "/root/ssl"
+    File = "/usr/lib/ocf"
+  }
+}
+
+# nebula
+FileSet {
+  Name = "nebula-fs"
+  Include {
+    Options {
+      Compression = GZIP
+      Signature = MD5
+    }
+    File = "/etc"
+    File = "/var/www/html/myproject/src/Acme"
+    File = "/usr/local/bin/make_sql_dump"
+    File = "/var/backups/dbdump/myproject-dump.sql"
+  } 
+}
+
+# pcntkjefesegu
+FileSet {
+  Name = "pcntkjefesegu-fs"
+  Include {
+    Options {
+      Compression = GZIP
+      Signature = MD5
+      IgnoreCase = Yes
+    }
+    File = "C:/backup"
+    File = "C:/Matafuegos"
+  }
+}
+
+# pcsupseguridad
+FileSet {
+  Name = "pcsupseguridad-fs"
+  Include {
+    Options {
+      Compression = GZIP
+      Signature = MD5
+      IgnoreCase = Yes
+    }
+    File = "C:/backup"
+    File = "C:/Matafuegos"
+  }
+}
+
+# zeus-infogestion
+FileSet {
+  Name = "zeus-infogestion-fs"
+  Include {
+    Options {
+      Compression = GZIP
+      Signature = MD5
+      IgnoreCase = Yes
+    }
+    File = "C:/backup/tmp/dbTerminalQuequen.sql"
+    File = "C:/backup/tmp/dbPFControl.sql"
+    File = "C:/backup/make_sql_backup.bat"
+    File = "C:/backup/drop_sql_backup.bat"
+    File = "c:/backup/compactar_bases.bat"
+    File = "C:/backup/backup.sql"
+    File = "C:/backup/backup.log"
+    File = "D:/PF4012"
+  }
+}
+
+# zeus-tq
+FileSet {
+  Name = "zeus-tq-fs"
+  Include {
+    Options {
+      Compression = GZIP
+      Signature = MD5
+      IgnoreCase = Yes
+    }
+    File = "D:/TQ1"
+  }
+}
+
+# pcstock
+FileSet {
+  Name = "pcstock-fs"
+  Enable VSS = No
+  Include {
+    Options {
+      Compression = GZIP
+      Signature = MD5
+      IgnoreCase = Yes
+    }
+    File = "C:/BACKUP_PCSTOCK"
+    File = "C:/Documents and Settings/Stock/Configuración local/Datos de programa/Microsoft/Outlook"
+  }
+}
+
+# pcimpuesto
+FileSet {
+  Name = "pcimpuesto-fs"
+  Enable VSS = No
+  Include {
+    Options {
+      Compression = GZIP
+      Signature = MD5
+      IgnoreCase = Yes
+    }
+    File = "C:/Program Files/S.I.Ap/AFIP"
+    File = "C:/BACKUP"
+  }
+}
+
+# pcpersonal
+FileSet {
+  Name = "pcpersonal-fs"
+  Include {
+    Options {
+      Compression = GZIP
+      Signature = MD5
+      IgnoreCase = Yes
+    }
+    File = "C:/spru"
+    File = "C:/spru_copia"
+    File = "C:/spru_copia2"
+    File = "C:/gratificacion"
+    File = "C:/librodeley"
+    File = "D:/Mis Documentos/aquibackup"
+    File = "C:/Archivos de programa/bases"
+    File = "C:/Archivos de programa/Intelektron"
+    File = "C:/Archivos de programa/Archivos comunes/Intelektron"
+    File = "C:/Archivos de programa/ZKSoftware"
+  }
+}
+
+# pcsecretaria
+FileSet {
+  Name = "pcsecretaria-fs"
+  Include {
+    Options {
+      Compression = GZIP
+      Signature = MD5
+      IgnoreCase = Yes
+    }
+    File = "C:/Users/secretaria/Documents/DOCUMENTOS MARIA SOL"
+    File = "C:/tmp/backup.log"
+  }
+}
+
+# pcntkjefeadmin
+FileSet {
+  Name = "pcntkjefeadmin-fs"
+  Include {
+    Options {
+      Compression = GZIP
+      Signature = MD5
+      IgnoreCase = Yes
+    }
+    File = "C:/pcvirtual/Sueldos"
+    File = "C:/backup_pendrive"
+    File = "C:/Program Files (x86)/S.I.Ap/AFIP"
+    File = "C:/1-TQSA"
+  }
+}
+
+# pcsupoper
+FileSet {
+  Name = "pcsupoper-fs"
+  Include {
+    Options {
+      Compression = GZIP
+      Signature = MD5
+      IgnoreCase = Yes
+    }
+    File = "C:/JAVIER"
+    File = "C:/guillermo"
+  }
+}
+
+# pcsupoper2
+FileSet {
+  Name = "pcsupoper2-fs"
+  Include {
+    Options {
+      Compression = GZIP
+      Signature = MD5
+      IgnoreCase = Yes
+    }
+    File = "C:/JAVIER"
+    File = "C:/Guillermo"
+  }
+}
+
+
+# pcpanol
+FileSet {
+  Name = "pcpanol-fs"
+  Include {
+    Options {
+      Compression = GZIP
+      Signature = MD5
+      IgnoreCase = Yes
+    }
+    File = "D:/backup"
+  }
+}
+# pcpanol (volátil)
+FileSet {
+  Name = "pcpanol-volatil-fs"
+  Include {
+    Options {
+      Compression = GZIP
+      Signature = MD5
+      IgnoreCase = Yes
+    }
+    File = "C:/Documents and Settings/pañol/Configuración local/Datos de programa/Microsoft/Outlook"
+  }
+}
+
+# pcntksupadmin
+FileSet {
+  Name = "pcntksupadmin-fs"
+  Include {
+    Options {
+      Compression = GZIP
+      Signature = MD5
+      IgnoreCase = Yes
+    }
+    File = "D:/BACKUP"
+  }
+}
+
+# pcauxcont
+FileSet {
+  Name = "pcauxcont-fs"
+  Include {
+    Options {
+      Compression = GZIP
+      Signature = MD5
+      IgnoreCase = Yes
+    }
+    File = "D:/backup"
+    File = "C:/Users/ctrobo/Documents"
+  }
+}
+
+# pcsupadmin
+FileSet {
+  Name = "pcsupadmin-fs"
+  Include {
+    Options {
+      Compression = GZIP
+      Signature = MD5
+      IgnoreCase = Yes
+    }
+    File = "C:/GeneraOnca"
+    File = "C:/Archivos de programa/S.I.Ap/AFIP"
+  }
+}
+
+# pcdibujante
+FileSet {
+  Name = "pcdibujante-fs"
+  Include {
+    Options {
+      Compression = GZIP
+      Signature = MD5
+      IgnoreCase = Yes
+    }
+    File = "D:/backup"
+  }
+}
+
+# arsat
+FileSet {
+  Name = "arsat-fs"
+  Include {
+    Options {
+      Compression = GZIP
+      Signature = MD5
+    }
+    File = "/etc"
+    File = "/root/bin"
+  }
+}
+
+# pccabezales
+FileSet {
+  Name = "pccabezales-fs"
+  Include {
+    Options {
+      Compression = GZIP
+      Signature = MD5
+    }
+    File = "/etc"
+    File = "/var/log/mascon2Server"
+  }
+}
+
+# twister
+FileSet {
+  Name = "twister-fs"
+  Include {
+    Options {
+      Compression = GZIP
+      Signature = MD5
+    }
+    File = "/etc"
+    File = "/root/bin"
+    File = "/var/log/wsctg"
+    File = "/var/log/ws_monsanto"
+    
+  }
+  Include {
+    Options {
+      Compression = GZIP
+      Signature = MD5
+      WildFile = "laridae-*.bz2"
+    }
+    File = "/var/log/laridae"
+    Exclude Dir Containing = .excludeme
+  }
+}

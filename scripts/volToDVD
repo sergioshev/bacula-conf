@@ -1,0 +1,126 @@
+#!/bin/bash
+
+# $Id: volToDVD,v 1.11 2015/07/28 15:51:47 aosorio Exp $
+##
+# Script para grabar los volúmenes en estado diferente a Full o Archive a DVD.
+#
+
+
+growisofs=/usr/bin/growisofs
+dev=${1:-/dev/sr0}
+offset=$2
+dirbackups=/var/backups/bacula
+marcar_volumen_grabado=/usr/local/bin/marcar_volumen_grabado
+query="SELECT name,
+              storage
+         FROM tq_consulta_volumen_no_grabado"
+
+
+baculadir=bacula-dir.terminalquequen.com.ar
+
+#23GiB
+fileset_size="24696061952"
+
+#18GiB
+fileset_min_size="19327352832"
+fileset=''
+
+# asumo que los espacion no vienen en los nombres de archivos.
+function fileset_size {
+  local fileset=$@
+  local fs_size=0
+  for mfile in ${fileset[@]} ; do
+    filesize=$(stat -c '%s' $mfile)
+    fs_size=$(($fs_size+$filesize))
+  done
+  echo $fs_size
+}
+
+function show_fileset {
+  local fileset=$@
+  for i in ${fileset[@]} ; do
+    echo "  $i"
+  done
+}
+
+function write_fileset {
+  local fileset=$@
+  echo
+  echo "===== GRABANDO ====="
+  echo Archivos a grabar
+  show_fileset $fileset
+  read -p "--- Pulse una tecla cuando el dispositivo $dev este listo"
+
+  $growisofs -use-the-force-luke=spare:none -overburn -dvd-compat -quiet -Z $dev -R -J $fileset
+  local error=$?
+  sleep 3 ; eject $dev
+
+  if [ $error -ne 0 ] ; then 
+    echo "--- No se pudo grabar el conjunto de archivos. No se marcarán como grabado."
+    echo "--- Puede continuar grabando los demás volumenes."
+    shift
+  else
+    echo "--- GRABADO"
+    echo
+    echo ===== MARCANDO =====
+    local file
+    local volset='';
+    for file in ${fileset[@]} ; do
+      local volume=${file/*\//}
+      volset="$volset\n$volume"
+    done
+    echo -e $volset | xargs $marcar_volumen_grabado
+    echo
+    echo ===== ETIQUETAR =====
+    echo -e $volset | sort
+  fi
+}
+
+[ -n "$offset" ] && query="$query offset $offset"
+
+[ "x$dev" == "x" ] && {
+  cat <<FFAA
+Modo de uso
+  $0 dev [offset]
+FFAA
+  exit 1
+}
+
+
+echo ===== RECOLECTANDO =====
+for i in $( ssh $baculadir "echo \"$query\" | psql -AU bacula bacula" | \
+    head -n -1 | tail -n +2 | xargs ) ; do
+  volume=$( echo $i | cut -f 1 -d \| )
+  storage=$( echo $i | cut -f 2 -d \| | sed 's/-storage//' )
+  file="$dirbackups/$storage/$volume"
+  if [ -r $file ] ; then 
+    size=$(fileset_size $fileset $file)
+    echo -n "--- Probando «$volume» ($( ls -sh $file | \
+      cut -f 1 -d \  ))". Tamaño fileset $(echo "scale=2 ; $size/1024/1024/1024" | bc)GiB
+
+    if [ $size -lt $fileset_size ] ; then 
+      fileset="$fileset $file"
+      echo "  .ok"
+    else
+      echo "  .desborde"
+      echo
+      echo "El volumen $volume se posterga para el proximo disco"
+      write_fileset $fileset
+      echo 
+      echo "---> Continuar con el proximo disco <---" ; read
+      echo
+      echo ===== RECOLECTANDO =====
+      fileset="$file"
+    fi
+  else
+    echo ERROR: el volumen $file NO EXISTE. Se ignora
+  fi
+done
+
+# grabo el resto si al menos tengo 18GiB
+size=$(fileset_size $fileset)
+if [ $size -gt $fileset_min_size ] ; then
+  write_fileset $fileset
+else
+  echo El fileset restante no llega al tamaño minimo
+fi

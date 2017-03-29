@@ -1,0 +1,19 @@
+#!/bin/bash
+
+# $Id: full_volumes_bacula,v 1.4 2015/04/17 18:31:07 aosorio Exp $
+##
+# Script para chequear si hay volúmenes llenos en Bacula.
+#
+
+sql_query="
+SELECT name,
+       status,
+       size,
+       jobs
+  FROM tq_consulta_volumen_no_grabado;
+
+SELECT pg_size_pretty(sum(size_bigint)::bigint) as total_size
+  FROM tq_consulta_volumen_no_grabado;
+"
+
+ssh bacula-dir "echo \"$sql_query\" | psql -U bacula bacula"

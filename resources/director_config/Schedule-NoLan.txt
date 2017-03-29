@@ -1,0 +1,17 @@
+# $Id: Schedule-NoLan.txt,v 1.3 2016/03/11 16:51:51 root Exp $
+#
+# Lista de equipos con ejecución especial.
+#
+# Formato:
+# minuto hora día-del-mes mes dia-de-la-semana job cliente puerto
+#
+# job    El trabajo a ejecutar.
+# client El nombre (o la dirección IP) del cliente sobre el cual se ejecutará
+#        el trabajo.
+# port   (opcional) Puerto donde escucha el demonio de Bacula del cliente. Por
+#        defecto se utilitará el puerto 9102.
+#
+
+0 10 * * * pccabezales pccabezales
+0 12 * * * pcsupoper pcsupoper
+1 12 * * * pcsupmant2 pcsupmant2

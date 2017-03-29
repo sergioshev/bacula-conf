@@ -1,0 +1,52 @@
+#!/bin/bash
+
+# $Id: registrarAlmacenBackup,v 1.2 2015/02/04 22:53:54 aosorio Exp $
+#
+# Script para registrar el almacén final de backups.
+#
+
+BACULADIR=bacula-dir.terminalquequen.com.ar
+GENERARHTML="$( dirname $0 )/registrarAlmacenBackupToHTML"
+
+read -p "¿Hasta qué fecha almacena? (Default ahora): " FECHA
+read -p "Observaciones de almacén (Default nulo): " OBSERVACIONES
+
+[ -n "$FECHA" ] && FECHA="'$FECHA'" || FECHA="'$( date +%F\ %T )'"
+
+[ -n "$OBSERVACIONES" ] && OBSERVACIONES="'$OBSERVACIONES'" || \
+  OBSERVACIONES='NULL'
+
+QUERY="SELECT registrar_almacen_backup( $FECHA, $OBSERVACIONES ) ;"
+
+eval $( ssh $BACULADIR "echo \"$QUERY\" | psql -U bacula" | \
+        sed -ne 's/\s*(\([0-9]\+\),\([0-9]\+\),\([0-9]\+\)).*$/almacen=\1 ; volumen_bacula=\2 ; backup_general=\3/p' )
+
+[ -z "$almacen" ] && {
+  echo -e "\n ----- El almacén está vacío ------ \n"
+  exit 1
+}
+
+cat <<FFAA
+
+Almacén registrado exitosamente
+-------------------------------
+
+Número de almacén...............$almacen
+Volúmenes en almacén............$volumen_bacula
+Backups generales en almacen....$backup_general
+
+FFAA
+
+echo -e "Generando reporte...\n"
+
+HTML=/var/www/sistemas_html/reporte_almacen_backup/almacen_$almacen.html
+
+. $GENERARHTML $almacen > $HTML
+
+[ $? -eq 0 ] && {
+  echo "Reporte generado exitosamente"
+  exit 0
+} || {
+  echo -e "¡¡¡No se pudo generar el reporte!!!\n"
+  exit 1
+}

@@ -1,0 +1,95 @@
+#
+# $Id: Schedule-resource.txt,v 1.9 2016/05/23 20:56:13 root Exp $
+#
+# Schedule - Director config
+#
+
+Schedule {
+  Name = "Diario"
+  Run = Full saturday at 22:30
+  Run = Differential sunday-friday at 22:30
+}
+
+# Schedule personalizada. Anteriormente aplicación NotUx.
+#Schedule {
+#  Name = "NotUx"
+#  Run = Level = Differential hourly at 0:00
+#  Run = Level = Differential hourly at 0:10
+#  Run = Level = Differential hourly at 0:20
+#  Run = Level = Differential hourly at 0:30
+#  Run = Level = Differential hourly at 0:40
+#  Run = Level = Differential hourly at 0:50
+#  Run = Level = Full at 22:30
+#}
+
+Schedule {
+  Name = "NotUx"
+  Run = Level = Incremental at 0:00
+  Run = Level = Incremental at 0:20
+  Run = Level = Incremental at 0:40
+  Run = Level = Incremental at 3:00 
+  Run = Level = Incremental at 3:20 
+  Run = Level = Incremental at 3:40
+  Run = Level = Incremental at 4:00
+  Run = Level = Incremental at 4:20
+  Run = Level = Incremental at 4:40
+  Run = Level = Incremental at 5:00
+  Run = Level = Incremental at 5:20
+  Run = Level = Incremental at 5:40
+  Run = Level = Incremental at 6:00
+  Run = Level = Incremental at 6:20
+  Run = Level = Incremental at 6:40
+  Run = Level = Incremental at 7:00
+  Run = Level = Incremental at 7:20
+  Run = Level = Incremental at 7:40
+  Run = Level = Incremental at 8:00
+  Run = Level = Incremental at 8:20
+  Run = Level = Incremental at 8:40
+  Run = Level = Incremental at 9:00
+  Run = Level = Incremental at 9:20
+  Run = Level = Incremental at 9:40
+  Run = Level = Incremental at 10:00
+  Run = Level = Incremental at 10:20
+  Run = Level = Incremental at 10:40
+  Run = Level = Incremental at 11:00
+  Run = Level = Incremental at 11:20
+  Run = Level = Incremental at 11:40
+  Run = Level = Incremental at 12:00
+  Run = Level = Incremental at 12:20
+  Run = Level = Incremental at 12:40
+  Run = Level = Incremental at 13:00
+  Run = Level = Incremental at 13:20
+  Run = Level = Incremental at 13:40
+  Run = Level = Incremental at 14:00
+  Run = Level = Incremental at 14:20
+  Run = Level = Incremental at 14:40
+  Run = Level = Incremental at 15:00
+  Run = Level = Incremental at 15:20
+  Run = Level = Incremental at 15:40
+  Run = Level = Incremental at 16:00
+  Run = Level = Incremental at 16:20
+  Run = Level = Incremental at 16:40
+  Run = Level = Incremental at 17:00
+  Run = Level = Incremental at 17:20
+  Run = Level = Incremental at 17:40
+  Run = Level = Incremental at 18:00
+  Run = Level = Incremental at 18:20
+  Run = Level = Incremental at 18:40
+  Run = Level = Incremental at 19:00
+  Run = Level = Incremental at 19:20
+  Run = Level = Incremental at 19:40
+  Run = Level = Incremental at 20:00
+  Run = Level = Incremental at 20:20
+  Run = Level = Incremental at 20:40
+  Run = Level = Incremental at 21:00
+  Run = Level = Incremental at 21:20
+  Run = Level = Incremental at 21:40
+  Run = Level = Incremental at 22:00
+  Run = Level = Incremental at 22:20
+  Run = Level = Incremental at 22:40
+  Run = Level = Incremental at 23:00
+  Run = Level = Incremental at 23:20
+  Run = Level = Incremental at 23:40
+  Run = Level = Full at 1:30
+}
+

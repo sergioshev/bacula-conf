@@ -1,0 +1,54 @@
+#!/bin/bash
+
+# $Id: despertarCliente,v 1.2 2012-01-11 01:01:31 sistemas Exp $
+##
+# Script para despertar un cliente de Bacula.
+#
+
+client=$1
+
+## CONFIGURACIÓN
+ATTEMPT_INTERVAL=45
+MAX_ATTEMPTS=5
+BOOT_TIME=60
+DHCP_CONF=/var/tmp/dhcpd.conf
+##
+
+function client_live
+{
+  address=$1
+  port=$2
+
+  echo q | telnet -e q $address $port > /dev/null 2>&1
+
+  return $?
+}
+
+address="$( echo "show client=$client" | bconsole | \
+            sed -ne 's/.*address=\(\S\+\)\+.*$/\1/p' | \
+            sed 's/\.terminalquequen\.com\.ar//g' )"
+
+port="$( echo "show client=$client" | bconsole | \
+           sed -ne 's/.*FDport=\([0-9]\+\)\+.*$/\1/p' )"
+
+[ -z "$address" ] && echo "¡¡¡Cliente <$client> desconocido!!!" 1>&2 && exit 1
+
+client_live $address $port && exit 0
+
+macaddr=$( grep " $address " $DHCP_CONF | sed -ne 's/.*hardware[[:space:]]\+ethernet[[:space:]]\+\([0-9a-fA-F:]\{17\}\).*$/\1/p' )
+
+echo Intentando despertar a $client...
+wakeonlan $macaddr
+sleep $BOOT_TIME
+
+ATTEMPTS=1
+
+while [ $ATTEMPTS -lt $MAX_ATTEMPTS ] ; do
+  client_live $address $port && echo Cliente despierto && exit 0
+  echo Intento $ATTEMPTS, intervalo: $ATTEMP_INTERVAL segundos.
+  sleep $ATTEMPT_INTERVAL
+  ATTEMPTS=$(($ATTEMPTS+1))
+done
+
+echo ¡¡¡Imposible despertar al cliente $client!!! 1>&2
+exit 1
